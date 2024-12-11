@@ -1,17 +1,37 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useGetOrdersQuery } from '../state/apiSlice'
+import { setFilter } from '../state/filterSlice'
 
 export default function OrderList() {
-  const orders = []
+  const dispatch = useDispatch()
+  const filter = useSelector((state) => state.filter)
+  const { data: orders = [], isLoading, isError } = useGetOrdersQuery()
+
+  const handleFilterChange = (size) => {
+    dispatch(setFilter(size))
+  }
+
+  const filteredOrders =
+    filter === 'All' ? orders : orders.filter((order) => order.size === filter)
+
+  if (isLoading) return <div>Loading orders...</div>
+  if (isError) return <div>Error loading orders.</div>
   return (
     <div id="orderList">
       <h2>Pizza Orders</h2>
       <ol>
         {
-          orders.map(() => {
+          filteredOrders.map((order) => {
+            const fullName = order.customer
+            const toppingsCount = order.toppings?.length || 0
+            const toppingsText = toppingsCount > 0
+              ? `${toppingsCount} topping${toppingsCount > 1 ? 's' : ''}`
+              : 'no toppings'
             return (
-              <li key={1}>
+              <li key={order.id}>
                 <div>
-                  order details here
+                  {fullName} ordered a size {order.size} with {toppingsText}
                 </div>
               </li>
             )
@@ -22,11 +42,15 @@ export default function OrderList() {
         Filter by size:
         {
           ['All', 'S', 'M', 'L'].map(size => {
-            const className = `button-filter${size === 'All' ? ' active' : ''}`
+            const className = `button-filter${filter === size ? ' active' : ''}`
             return <button
-              data-testid={`filterBtn${size}`}
-              className={className}
-              key={size}>{size}</button>
+                      onClick={() => handleFilterChange(size)}
+                      data-testid={`filterBtn${size}`}
+                      className={className}
+                      key={size}
+                  >
+                      {size}
+                  </button>
           })
         }
       </div>
