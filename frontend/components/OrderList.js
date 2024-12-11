@@ -15,12 +15,12 @@ export default function OrderList() {
   const filteredOrders =
     filter === 'All' ? orders : orders.filter((order) => order.size === filter)
 
+  {isLoading && <div>Loading orders...</div>}
+  {isError && <div >Error loading orders.</div>}
   return (
     <div id="orderList">
       <h2>Pizza Orders</h2>
       <ol>
-      {isLoading && <div>Loading orders...</div>}
-      {isError && <div >Error loading orders.</div>}
         {
           filteredOrders && filteredOrders.map((order) => {
             const fullName = order.customer
