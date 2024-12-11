@@ -15,14 +15,14 @@ export default function OrderList() {
   const filteredOrders =
     filter === 'All' ? orders : orders.filter((order) => order.size === filter)
 
-  if (isLoading) return <div>Loading orders...</div>
-  if (isError) return <div>Error loading orders.</div>
   return (
     <div id="orderList">
       <h2>Pizza Orders</h2>
       <ol>
+      {isLoading && <div>Loading orders...</div>}
+      {isError && <div >Error loading orders.</div>}
         {
-          filteredOrders.map((order) => {
+          filteredOrders && filteredOrders.map((order) => {
             const fullName = order.customer
             const toppingsCount = order.toppings?.length || 0
             const toppingsText = toppingsCount > 0
@@ -30,13 +30,13 @@ export default function OrderList() {
               : 'no toppings'
             return (
               <li key={order.id}>
-                <div>
-                  {fullName} ordered a size {order.size} with {toppingsText}
-                </div>
+              <div>
+                {fullName} ordered a size {order.size} with {toppingsText}
+              </div>
               </li>
             )
           })
-        }
+       }
       </ol>
       <div id="sizeFilters">
         Filter by size:

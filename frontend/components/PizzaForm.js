@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useCreateOrderMutation } from '../state/apiSlice'
 import { updateField, resetForm } from '../state/formSlice'
 
-
 export default function PizzaForm() {
   const dispatch = useDispatch()
   const formState = useSelector((state) => state.form)
